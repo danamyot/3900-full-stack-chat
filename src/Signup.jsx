@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 class Signup extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +23,11 @@ class Signup extends Component {
     let body = await res.json();
     if (!body.success) {
       alert("Username exists");
+      return;
     }
+    this.props.dispatch({
+      type: "login-success"
+    });
   };
   render = () => {
     return (
@@ -36,4 +41,4 @@ class Signup extends Component {
     );
   };
 }
-export default Signup;
+export default connect()(Signup);

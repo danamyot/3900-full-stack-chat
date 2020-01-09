@@ -35724,7 +35724,9 @@ let Login = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Unconn
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -35757,7 +35759,12 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
       if (!body.success) {
         alert("Username exists");
+        return;
       }
+
+      this.props.dispatch({
+        type: "login-success"
+      });
     });
 
     _defineProperty(this, "render", () => {
@@ -35782,7 +35789,7 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Signup);
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Signup));
 
 /***/ }),
 
