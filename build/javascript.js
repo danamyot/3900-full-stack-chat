@@ -35480,9 +35480,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _Login_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Login.jsx */ "./src/Login.jsx");
 /* harmony import */ var _Signup_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Signup.jsx */ "./src/Signup.jsx");
-/* harmony import */ var _ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ChatMessages.jsx */ "./src/ChatMessages.jsx");
-/* harmony import */ var _ChatForm_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ChatForm.jsx */ "./src/ChatForm.jsx");
+/* harmony import */ var _Logout_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Logout.jsx */ "./src/Logout.jsx");
+/* harmony import */ var _ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ChatMessages.jsx */ "./src/ChatMessages.jsx");
+/* harmony import */ var _ChatForm_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ChatForm.jsx */ "./src/ChatForm.jsx");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -35497,7 +35499,7 @@ class UnconnectedApp extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "render", () => {
       if (this.props.lgin) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], null));
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Logout_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_6__["default"], null));
       }
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Signup"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Signup_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Login_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null));
@@ -35713,6 +35715,46 @@ let Login = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Unconn
 
 /***/ }),
 
+/***/ "./src/Logout.jsx":
+/*!************************!*\
+  !*** ./src/Logout.jsx ***!
+  \************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+class Logout extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "logout", () => {
+      this.props.dispatch({
+        type: "logout"
+      });
+    });
+
+    _defineProperty(this, "render", () => {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.logout
+      }, "Logout");
+    });
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Logout));
+
+/***/ }),
+
 /***/ "./src/Signup.jsx":
 /*!************************!*\
   !*** ./src/Signup.jsx ***!
@@ -35869,6 +35911,12 @@ let reducer = (state, action) => {
   if (action.type === "login-success") {
     return { ...state,
       loggedIn: true
+    };
+  }
+
+  if (action.type === "logout") {
+    return { ...state,
+      loggedIn: false
     };
   }
 
