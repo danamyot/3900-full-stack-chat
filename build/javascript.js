@@ -35744,15 +35744,20 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       });
     });
 
-    _defineProperty(this, "handleSubmit", evt => {
+    _defineProperty(this, "handleSubmit", async evt => {
       evt.preventDefault();
       let data = new FormData();
       data.append("username", this.state.username);
       data.append("password", this.state.password);
-      fetch("/signup", {
+      let res = await fetch("/signup", {
         method: "POST",
         body: data
       });
+      let body = await res.json();
+
+      if (!body.success) {
+        alert("Username exists");
+      }
     });
 
     _defineProperty(this, "render", () => {

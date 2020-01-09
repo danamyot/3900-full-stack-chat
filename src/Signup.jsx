@@ -13,12 +13,16 @@ class Signup extends Component {
   handlePasswordChange = event => {
     this.setState({ password: event.target.value });
   };
-  handleSubmit = evt => {
+  handleSubmit = async evt => {
     evt.preventDefault();
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);
-    fetch("/signup", { method: "POST", body: data });
+    let res = await fetch("/signup", { method: "POST", body: data });
+    let body = await res.json();
+    if (!body.success) {
+      alert("Username exists");
+    }
   };
   render = () => {
     return (
