@@ -1,0 +1,6 @@
+{
+  "restartable": "rs",
+  "ignore": ["build/", "src/"],
+  "ext": "js",
+  "verbose": true
+}
