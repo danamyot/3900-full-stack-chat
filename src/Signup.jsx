@@ -8,16 +8,13 @@ class Signup extends Component {
     };
   }
   handleUsernameChange = event => {
-    console.log("new username", event.target.value);
     this.setState({ username: event.target.value });
   };
   handlePasswordChange = event => {
-    console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
   handleSubmit = evt => {
     evt.preventDefault();
-    console.log("signup form submitted");
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);

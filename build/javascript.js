@@ -190,7 +190,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n    background-color: #bbb;\n}", ""]);
+exports.push([module.i, "body {\n  background-color: #bbb;\n}\n", ""]);
 
 
 
@@ -35537,7 +35537,6 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleMessageChange", event => {
-      console.log("new message", event.target.value);
       this.setState({
         message: event.target.value
       });
@@ -35545,7 +35544,6 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "handleSubmit", event => {
       event.preventDefault();
-      console.log("form submitted");
       let data = new FormData();
       data.append("msg", this.state.message);
       fetch("/newmessage", {
@@ -35602,9 +35600,7 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
       let updateMessages = async () => {
         let response = await fetch("/messages");
         let responseBody = await response.text();
-        console.log("response from messages", responseBody);
         let parsed = JSON.parse(responseBody);
-        console.log("parsed", parsed);
         this.props.dispatch({
           type: "set-messages",
           messages: parsed
@@ -35656,14 +35652,12 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleUsernameChange", event => {
-      console.log("new username", event.target.value);
       this.setState({
         username: event.target.value
       });
     });
 
     _defineProperty(this, "handlePasswordChange", event => {
-      console.log("new password", event.target.value);
       this.setState({
         password: event.target.value
       });
@@ -35671,7 +35665,6 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "handleSubmit", async evt => {
       evt.preventDefault();
-      console.log("login form submitted");
       let data = new FormData();
       data.append("username", this.state.username);
       data.append("password", this.state.password);
@@ -35681,9 +35674,7 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         credentials: "include"
       });
       let responseBody = await response.text();
-      console.log("responseBody from login", responseBody);
       let body = JSON.parse(responseBody);
-      console.log("parsed body", body);
 
       if (!body.success) {
         alert("login failed");
@@ -35742,14 +35733,12 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleUsernameChange", event => {
-      console.log("new username", event.target.value);
       this.setState({
         username: event.target.value
       });
     });
 
     _defineProperty(this, "handlePasswordChange", event => {
-      console.log("new password", event.target.value);
       this.setState({
         password: event.target.value
       });
@@ -35757,7 +35746,6 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "handleSubmit", evt => {
       evt.preventDefault();
-      console.log("signup form submitted");
       let data = new FormData();
       data.append("username", this.state.username);
       data.append("password", this.state.password);

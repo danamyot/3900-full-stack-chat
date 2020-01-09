@@ -5,12 +5,10 @@ class ChatForm extends Component {
     this.state = { message: "" };
   }
   handleMessageChange = event => {
-    console.log("new message", event.target.value);
     this.setState({ message: event.target.value });
   };
   handleSubmit = event => {
     event.preventDefault();
-    console.log("form submitted");
     let data = new FormData();
     data.append("msg", this.state.message);
     fetch("/newmessage", {
