@@ -1,57 +1,56 @@
-let express = require("express");
-let app = express();
-let multer = require("multer");
-let upload = multer();
-let cookieParser = require("cookie-parser");
-let reloadMagic = require("./reload-magic.js");
+const express = require("express");
+const app = express();
+const multer = require("multer");
+const upload = multer();
+const cookieParser = require("cookie-parser");
+const reloadMagic = require("./reload-magic.js");
 
 app.use(cookieParser());
 reloadMagic(app);
 
-let passwords = {};
-let sessions = {};
+const passwords = {};
+const sessions = {};
 let messages = [];
 
-let generateId = () => {
+const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000);
 };
 
 app.use("/", express.static("build"));
 
 app.get("/messages", function(req, res) {
-  let sessionID = req.cookies.sid;
+  const sessionID = req.cookies.sid;
   if (!sessions[sessionID]) {
     return;
   }
-  res.send(JSON.stringify(messages));
+  return res.send(JSON.stringify(messages));
 });
 
 app.post("/newmessage", upload.none(), (req, res) => {
-  let sessionId = req.cookies.sid;
-  let username = sessions[sessionId];
-  let msg = req.body.msg;
-  let newMsg = { username: username, message: msg };
+  const sessionId = req.cookies.sid;
+  const username = sessions[sessionId];
+  const msg = req.body.msg;
+  const newMsg = { username: username, message: msg };
   messages = messages.concat(newMsg);
   res.send(JSON.stringify({ success: true }));
 });
 
 app.post("/login", upload.none(), (req, res) => {
-  let username = req.body.username;
-  let enteredPassword = req.body.password;
-  let expectedPassword = passwords[username];
+  const username = req.body.username;
+  const enteredPassword = req.body.password;
+  const expectedPassword = passwords[username];
   if (enteredPassword === expectedPassword) {
-    let sessionId = generateId();
+    const sessionId = generateId();
     sessions[sessionId] = username;
     res.cookie("sid", sessionId);
-    res.send(JSON.stringify({ success: true }));
-    return;
+    return res.send(JSON.stringify({ success: true }));
   }
   res.send(JSON.stringify({ success: false }));
 });
 
 app.post("/signup", upload.none(), (req, res) => {
-  let username = req.body.username;
-  let enteredPassword = req.body.password;
+  const username = req.body.username;
+  const enteredPassword = req.body.password;
   if (!passwords[username]) {
     passwords[username] = enteredPassword;
     return res.send(JSON.stringify({ success: true }));
