@@ -53,6 +53,9 @@ app.post("/signup", upload.none(), (req, res) => {
   const enteredPassword = req.body.password;
   if (!passwords[username]) {
     passwords[username] = enteredPassword;
+    const sessionId = generateId();
+    sessions[sessionId] = username;
+    res.cookie("sid", sessionId);
     return res.send(JSON.stringify({ success: true }));
   }
   return res.send(JSON.stringify({ success: false }));
