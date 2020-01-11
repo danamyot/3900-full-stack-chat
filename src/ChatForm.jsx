@@ -11,6 +11,7 @@ class ChatForm extends Component {
     event.preventDefault();
     let data = new FormData();
     data.append("msg", this.state.message);
+    this.setState({ message: "" });
     fetch("/newmessage", {
       method: "POST",
       body: data,
@@ -21,7 +22,11 @@ class ChatForm extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleMessageChange} type="text" />
+          <input
+            onChange={this.handleMessageChange}
+            value={this.state.message}
+            type="text"
+          />
           <input type="submit" />
         </form>
       </div>

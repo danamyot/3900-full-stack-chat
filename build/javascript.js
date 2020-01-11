@@ -35548,6 +35548,9 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       event.preventDefault();
       let data = new FormData();
       data.append("msg", this.state.message);
+      this.setState({
+        message: ""
+      });
       fetch("/newmessage", {
         method: "POST",
         body: data,
@@ -35560,6 +35563,7 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         onSubmit: this.handleSubmit
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleMessageChange,
+        value: this.state.message,
         type: "text"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "submit"
@@ -35613,7 +35617,9 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
     });
 
     _defineProperty(this, "render", () => {
-      let msgToElement = e => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, " ", e.username, ":", e.message, " ");
+      let msgToElement = (e, i) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        key: i
+      }, " ", e.username.toUpperCase(), ": ", e.message, " ");
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.props.messages.map(msgToElement)));
     });

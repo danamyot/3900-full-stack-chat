@@ -14,10 +14,10 @@ class UnconnectedChatMessages extends Component {
     setInterval(updateMessages, 500);
   };
   render = () => {
-    let msgToElement = e => (
-      <li>
+    let msgToElement = (e, i) => (
+      <li key={i}>
         {" "}
-        {e.username}:{e.message}{" "}
+        {e.username.toUpperCase()}: {e.message}{" "}
       </li>
     );
     return (
