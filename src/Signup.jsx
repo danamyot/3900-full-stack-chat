@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 class Signup extends Component {
   constructor(props) {
     super(props);
@@ -8,20 +9,25 @@ class Signup extends Component {
     };
   }
   handleUsernameChange = event => {
-    console.log("new username", event.target.value);
     this.setState({ username: event.target.value });
   };
   handlePasswordChange = event => {
-    console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
-  handleSubmit = evt => {
+  handleSubmit = async evt => {
     evt.preventDefault();
-    console.log("signup form submitted");
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);
-    fetch("/signup", { method: "POST", body: data });
+    let res = await fetch("/signup", { method: "POST", body: data });
+    let body = await res.json();
+    if (!body.success) {
+      alert("Username exists");
+      return;
+    }
+    this.props.dispatch({
+      type: "login-success"
+    });
   };
   render = () => {
     return (
@@ -35,4 +41,4 @@ class Signup extends Component {
     );
   };
 }
-export default Signup;
+export default connect()(Signup);

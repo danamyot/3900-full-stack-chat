@@ -3,23 +3,21 @@ import { connect } from "react-redux";
 class UnconnectedChatMessages extends Component {
   componentDidMount = () => {
     let updateMessages = async () => {
-      let response = await fetch("/messages");
-      let responseBody = await response.text();
-      console.log("response from messages", responseBody);
-      let parsed = JSON.parse(responseBody);
-      console.log("parsed", parsed);
+      let fetchedMessages = await (
+        await fetch(`/messages?r=${this.props.activeRoom}`)
+      ).json();
       this.props.dispatch({
         type: "set-messages",
-        messages: parsed
+        messages: fetchedMessages
       });
     };
-    setInterval(updateMessages, 500);
+    setInterval(updateMessages, 300);
   };
   render = () => {
-    let msgToElement = e => (
-      <li>
+    let msgToElement = (e, i) => (
+      <li key={i}>
         {" "}
-        {e.username}:{e.message}{" "}
+        {e.username.toUpperCase()}: {e.message}{" "}
       </li>
     );
     return (
@@ -31,6 +29,7 @@ class UnconnectedChatMessages extends Component {
 }
 let mapStateToProps = state => {
   return {
+    activeRoom: state.activeChatRoom,
     messages: state.msgs
   };
 };

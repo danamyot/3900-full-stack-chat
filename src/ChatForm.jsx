@@ -5,15 +5,14 @@ class ChatForm extends Component {
     this.state = { message: "" };
   }
   handleMessageChange = event => {
-    console.log("new message", event.target.value);
     this.setState({ message: event.target.value });
   };
   handleSubmit = event => {
     event.preventDefault();
-    console.log("form submitted");
     let data = new FormData();
     data.append("msg", this.state.message);
-    fetch("/newmessage", {
+    this.setState({ message: "" });
+    fetch(`/newmessage?r=${this.props.activeRoom}`, {
       method: "POST",
       body: data,
       credentials: "include"
@@ -23,7 +22,11 @@ class ChatForm extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleMessageChange} type="text" />
+          <input
+            onChange={this.handleMessageChange}
+            value={this.state.message}
+            type="text"
+          />
           <input type="submit" />
         </form>
       </div>

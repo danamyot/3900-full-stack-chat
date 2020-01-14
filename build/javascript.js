@@ -190,7 +190,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n    background-color: #bbb;\n}", ""]);
+exports.push([module.i, "body {\n  background-color: #bbb;\n}\n", ""]);
 
 
 
@@ -35480,8 +35480,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _Login_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Login.jsx */ "./src/Login.jsx");
 /* harmony import */ var _Signup_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Signup.jsx */ "./src/Signup.jsx");
-/* harmony import */ var _ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ChatMessages.jsx */ "./src/ChatMessages.jsx");
-/* harmony import */ var _ChatForm_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ChatForm.jsx */ "./src/ChatForm.jsx");
+/* harmony import */ var _Logout_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Logout.jsx */ "./src/Logout.jsx");
+/* harmony import */ var _ChatRoom_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ChatRoom.jsx */ "./src/ChatRoom.jsx");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -35497,7 +35497,7 @@ class UnconnectedApp extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "render", () => {
       if (this.props.lgin) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], null));
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Logout_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], null));
       }
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Signup"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Signup_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Login_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null));
@@ -35506,13 +35506,13 @@ class UnconnectedApp extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 }
 
-let mapStateToProps = state => {
+const mapStateToProps = state => {
   return {
     lgin: state.loggedIn
   };
 };
 
-let App = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps)(UnconnectedApp);
+const App = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps)(UnconnectedApp);
 /* harmony default export */ __webpack_exports__["default"] = (App);
 
 /***/ }),
@@ -35537,7 +35537,6 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleMessageChange", event => {
-      console.log("new message", event.target.value);
       this.setState({
         message: event.target.value
       });
@@ -35545,10 +35544,12 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "handleSubmit", event => {
       event.preventDefault();
-      console.log("form submitted");
       let data = new FormData();
       data.append("msg", this.state.message);
-      fetch("/newmessage", {
+      this.setState({
+        message: ""
+      });
+      fetch(`/newmessage?r=${this.props.activeRoom}`, {
         method: "POST",
         body: data,
         credentials: "include"
@@ -35560,6 +35561,7 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         onSubmit: this.handleSubmit
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleMessageChange,
+        value: this.state.message,
         type: "text"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "submit"
@@ -35600,22 +35602,20 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
 
     _defineProperty(this, "componentDidMount", () => {
       let updateMessages = async () => {
-        let response = await fetch("/messages");
-        let responseBody = await response.text();
-        console.log("response from messages", responseBody);
-        let parsed = JSON.parse(responseBody);
-        console.log("parsed", parsed);
+        let fetchedMessages = await (await fetch(`/messages?r=${this.props.activeRoom}`)).json();
         this.props.dispatch({
           type: "set-messages",
-          messages: parsed
+          messages: fetchedMessages
         });
       };
 
-      setInterval(updateMessages, 500);
+      setInterval(updateMessages, 300);
     });
 
     _defineProperty(this, "render", () => {
-      let msgToElement = e => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, " ", e.username, ":", e.message, " ");
+      let msgToElement = (e, i) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        key: i
+      }, " ", e.username.toUpperCase(), ": ", e.message, " ");
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.props.messages.map(msgToElement)));
     });
@@ -35625,12 +35625,180 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
 
 let mapStateToProps = state => {
   return {
+    activeRoom: state.activeChatRoom,
     messages: state.msgs
   };
 };
 
 let Chat = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps)(UnconnectedChatMessages);
 /* harmony default export */ __webpack_exports__["default"] = (Chat);
+
+/***/ }),
+
+/***/ "./src/ChatRoom.jsx":
+/*!**************************!*\
+  !*** ./src/ChatRoom.jsx ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChatMessages.jsx */ "./src/ChatMessages.jsx");
+/* harmony import */ var _ChatForm_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ChatForm.jsx */ "./src/ChatForm.jsx");
+/* harmony import */ var _CreateRoom_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreateRoom.jsx */ "./src/CreateRoom.jsx");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+class UnconnectedChatRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "componentDidMount", () => {
+      this.addRoomsToStore();
+    });
+
+    _defineProperty(this, "addRoomsToStore", async () => {
+      const fetchRooms = await (await fetch("/rooms")).json();
+      const rooms = fetchRooms.rooms;
+      this.props.dispatch({
+        type: "set-all-rooms",
+        rooms
+      });
+
+      if (!this.props.activeRoom) {
+        this.props.dispatch({
+          type: "set-active-room",
+          newRoom: Object.keys(rooms)[0]
+        });
+      }
+    });
+
+    _defineProperty(this, "handleRoomSelect", e => {
+      this.setState({
+        activeRoom: e.target.value
+      });
+      this.props.dispatch({
+        type: "set-active-room",
+        newRoom: e.target.value
+      });
+    });
+
+    _defineProperty(this, "renderRoomSelector", () => {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        onChange: this.handleRoomSelect,
+        value: this.props.activeRoom
+      }, Object.keys(this.props.chatRooms).map(room => {
+        const roomInfo = this.props.chatRooms[room];
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          value: roomInfo.id,
+          key: roomInfo.id
+        }, roomInfo.name);
+      }));
+    });
+
+    _defineProperty(this, "render", () => {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(this.props.chatRooms).length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, Object.keys(this.props.chatRooms).length > 1 && this.renderRoomSelector(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        activeRoom: this.props.activeRoom
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CreateRoom_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        addRoomsToStore: this.addRoomsToStore
+      })) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CreateRoom_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        addRoomsToStore: this.addRoomsToStore
+      }));
+    });
+  }
+
+}
+
+let mapStateToProps = state => {
+  return {
+    activeRoom: state.activeChatRoom,
+    chatRooms: state.chatRooms
+  };
+};
+
+const ChatRoom = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps)(UnconnectedChatRoom);
+/* harmony default export */ __webpack_exports__["default"] = (ChatRoom);
+
+/***/ }),
+
+/***/ "./src/CreateRoom.jsx":
+/*!****************************!*\
+  !*** ./src/CreateRoom.jsx ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+class UnconnectedCreateRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(props) {
+    super(props);
+
+    _defineProperty(this, "handleNewRoomChange", e => {
+      this.setState({
+        newRoomInput: e.target.value
+      });
+    });
+
+    _defineProperty(this, "handleAddRoom", async e => {
+      e.preventDefault();
+      const newRoomId = this.state.newRoomInput.replace(/[^a-zA-Z ]/g, "").split(" ").join("").toLowerCase();
+      const newRoomName = this.state.newRoomInput;
+      let data = new FormData();
+      data.append("id", newRoomId);
+      data.append("name", newRoomName);
+      this.setState({
+        newRoomInput: ""
+      });
+      await fetch("/add-room", {
+        method: "POST",
+        body: data
+      });
+      this.props.addRoomsToStore();
+      this.props.dispatch({
+        type: "set-active-room",
+        newRoom: newRoomId
+      });
+    });
+
+    this.state = {
+      newRoomInput: ""
+    };
+  }
+
+  render() {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      onSubmit: this.handleAddRoom
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      onChange: this.handleNewRoomChange,
+      value: this.state.newRoomInput,
+      type: "text"
+    }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      type: "submit"
+    }, "Create Room"));
+  }
+
+}
+
+const CreateRoom = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(UnconnectedCreateRoom);
+/* harmony default export */ __webpack_exports__["default"] = (CreateRoom);
 
 /***/ }),
 
@@ -35656,14 +35824,12 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleUsernameChange", event => {
-      console.log("new username", event.target.value);
       this.setState({
         username: event.target.value
       });
     });
 
     _defineProperty(this, "handlePasswordChange", event => {
-      console.log("new password", event.target.value);
       this.setState({
         password: event.target.value
       });
@@ -35671,7 +35837,6 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     _defineProperty(this, "handleSubmit", async evt => {
       evt.preventDefault();
-      console.log("login form submitted");
       let data = new FormData();
       data.append("username", this.state.username);
       data.append("password", this.state.password);
@@ -35681,9 +35846,7 @@ class UnconnectedLogin extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         credentials: "include"
       });
       let responseBody = await response.text();
-      console.log("responseBody from login", responseBody);
       let body = JSON.parse(responseBody);
-      console.log("parsed body", body);
 
       if (!body.success) {
         alert("login failed");
@@ -35722,6 +35885,46 @@ let Login = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Unconn
 
 /***/ }),
 
+/***/ "./src/Logout.jsx":
+/*!************************!*\
+  !*** ./src/Logout.jsx ***!
+  \************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+class Logout extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "logout", () => {
+      this.props.dispatch({
+        type: "logout"
+      });
+    });
+
+    _defineProperty(this, "render", () => {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.logout
+      }, "Logout");
+    });
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Logout));
+
+/***/ }),
+
 /***/ "./src/Signup.jsx":
 /*!************************!*\
   !*** ./src/Signup.jsx ***!
@@ -35733,7 +35936,9 @@ let Login = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Unconn
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -35742,28 +35947,35 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     _defineProperty(this, "handleUsernameChange", event => {
-      console.log("new username", event.target.value);
       this.setState({
         username: event.target.value
       });
     });
 
     _defineProperty(this, "handlePasswordChange", event => {
-      console.log("new password", event.target.value);
       this.setState({
         password: event.target.value
       });
     });
 
-    _defineProperty(this, "handleSubmit", evt => {
+    _defineProperty(this, "handleSubmit", async evt => {
       evt.preventDefault();
-      console.log("signup form submitted");
       let data = new FormData();
       data.append("username", this.state.username);
       data.append("password", this.state.password);
-      fetch("/signup", {
+      let res = await fetch("/signup", {
         method: "POST",
         body: data
+      });
+      let body = await res.json();
+
+      if (!body.success) {
+        alert("Username exists");
+        return;
+      }
+
+      this.props.dispatch({
+        type: "login-success"
       });
     });
 
@@ -35789,7 +36001,7 @@ class Signup extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Signup);
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])()(Signup));
 
 /***/ }),
 
@@ -35872,9 +36084,27 @@ let reducer = (state, action) => {
     };
   }
 
+  if (action.type === "logout") {
+    return { ...state,
+      loggedIn: false
+    };
+  }
+
   if (action.type === "set-messages") {
     return { ...state,
       msgs: action.messages
+    };
+  }
+
+  if (action.type === "set-all-rooms") {
+    return { ...state,
+      chatRooms: action.rooms
+    };
+  }
+
+  if (action.type === "set-active-room") {
+    return { ...state,
+      activeChatRoom: action.newRoom
     };
   }
 
@@ -35883,7 +36113,9 @@ let reducer = (state, action) => {
 
 const store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(reducer, {
   msgs: [],
-  loggedIn: false
+  loggedIn: false,
+  activeChatRoom: "",
+  chatRooms: {}
 }, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 /* harmony default export */ __webpack_exports__["default"] = (store);
 
