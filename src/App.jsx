@@ -3,16 +3,14 @@ import { connect } from "react-redux";
 import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Logout from "./Logout.jsx";
-import ChatMessages from "./ChatMessages.jsx";
-import ChatForm from "./ChatForm.jsx";
+import ChatRoom from "./ChatRoom.jsx";
 class UnconnectedApp extends Component {
   render = () => {
     if (this.props.lgin) {
       return (
         <div>
           <Logout />
-          <ChatMessages />
-          <ChatForm />
+          <ChatRoom />
         </div>
       );
     }
@@ -26,8 +24,8 @@ class UnconnectedApp extends Component {
     );
   };
 }
-let mapStateToProps = state => {
+const mapStateToProps = state => {
   return { lgin: state.loggedIn };
 };
-let App = connect(mapStateToProps)(UnconnectedApp);
+const App = connect(mapStateToProps)(UnconnectedApp);
 export default App;

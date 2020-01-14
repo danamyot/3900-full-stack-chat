@@ -9,11 +9,17 @@ let reducer = (state, action) => {
   if (action.type === "set-messages") {
     return { ...state, msgs: action.messages };
   }
+  if (action.type === "set-all-rooms") {
+    return { ...state, chatRooms: action.rooms };
+  }
+  if (action.type === "set-active-room") {
+    return { ...state, activeChatRoom: action.newRoom };
+  }
   return state;
 };
 const store = createStore(
   reducer,
-  { msgs: [], loggedIn: false },
+  { msgs: [], loggedIn: false, activeChatRoom: "", chatRooms: {} },
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 export default store;

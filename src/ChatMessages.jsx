@@ -11,9 +11,10 @@ class UnconnectedChatMessages extends Component {
         messages: parsed
       });
     };
-    setInterval(updateMessages, 500);
+    // setInterval(updateMessages, 300);
   };
   render = () => {
+    // console.log(this.props);
     let msgToElement = (e, i) => (
       <li key={i}>
         {" "}
