@@ -11,7 +11,6 @@ reloadMagic(app);
 const passwords = {};
 const sessions = {};
 const chatRooms = {};
-let messages = [];
 
 const generateId = () => {
   return "" + Math.floor(Math.random() * 100000000);
@@ -64,18 +63,20 @@ app.post("/add-room", upload.none(), (req, res) => {
 
 app.get("/messages", function(req, res) {
   const sessionID = req.cookies.sid;
+  const chatRoom = req.query.r;
   if (!sessions[sessionID]) {
     return;
   }
-  return res.send(JSON.stringify(messages));
+  return res.send(JSON.stringify(chatRooms[chatRoom].messages));
 });
 
 app.post("/newmessage", upload.none(), (req, res) => {
   const sessionId = req.cookies.sid;
   const username = sessions[sessionId];
+  const chatRoom = req.query.r;
   const msg = req.body.msg;
   const newMsg = { username: username, message: msg };
-  messages = messages.concat(newMsg);
+  chatRooms[chatRoom].messages = chatRooms[chatRoom].messages.concat(newMsg);
   res.send(JSON.stringify({ success: true }));
 });
 

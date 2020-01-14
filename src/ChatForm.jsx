@@ -12,7 +12,7 @@ class ChatForm extends Component {
     let data = new FormData();
     data.append("msg", this.state.message);
     this.setState({ message: "" });
-    fetch("/newmessage", {
+    fetch(`/newmessage?r=${this.props.activeRoom}`, {
       method: "POST",
       body: data,
       credentials: "include"

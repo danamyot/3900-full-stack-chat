@@ -35549,7 +35549,7 @@ class ChatForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       this.setState({
         message: ""
       });
-      fetch("/newmessage", {
+      fetch(`/newmessage?r=${this.props.activeRoom}`, {
         method: "POST",
         body: data,
         credentials: "include"
@@ -35602,19 +35602,17 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
 
     _defineProperty(this, "componentDidMount", () => {
       let updateMessages = async () => {
-        let response = await fetch("/messages");
-        let responseBody = await response.text();
-        let parsed = JSON.parse(responseBody);
+        let fetchedMessages = await (await fetch(`/messages?r=${this.props.activeRoom}`)).json();
         this.props.dispatch({
           type: "set-messages",
-          messages: parsed
+          messages: fetchedMessages
         });
-      }; // setInterval(updateMessages, 300);
+      };
 
+      setInterval(updateMessages, 300);
     });
 
     _defineProperty(this, "render", () => {
-      // console.log(this.props);
       let msgToElement = (e, i) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         key: i
       }, " ", e.username.toUpperCase(), ": ", e.message, " ");
@@ -35627,6 +35625,7 @@ class UnconnectedChatMessages extends react__WEBPACK_IMPORTED_MODULE_0__["Compon
 
 let mapStateToProps = state => {
   return {
+    activeRoom: state.activeChatRoom,
     messages: state.msgs
   };
 };
@@ -35707,9 +35706,7 @@ class UnconnectedChatRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"
     });
 
     _defineProperty(this, "render", () => {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(this.props.chatRooms).length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, Object.keys(this.props.chatRooms).length > 1 && this.renderRoomSelector(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        activeRoom: this.props.activeRoom
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, Object.keys(this.props.chatRooms).length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, Object.keys(this.props.chatRooms).length > 1 && this.renderRoomSelector(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatMessages_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ChatForm_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
         activeRoom: this.props.activeRoom
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CreateRoom_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
         addRoomsToStore: this.addRoomsToStore

@@ -50,7 +50,7 @@ class UnconnectedChatRoom extends Component {
           <>
             {Object.keys(this.props.chatRooms).length > 1 &&
               this.renderRoomSelector()}
-            <ChatMessages activeRoom={this.props.activeRoom} />
+            <ChatMessages />
             <ChatForm activeRoom={this.props.activeRoom} />
             <CreateRoom addRoomsToStore={this.addRoomsToStore} />
           </>
